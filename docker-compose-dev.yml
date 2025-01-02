@@ -1,0 +1,10 @@
+services:
+  tado-exporter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: local/tado-exporter
+    restart: unless-stopped
+    environment:
+      - TADO_USERNAME=
+      - TADO_PASSWORD=

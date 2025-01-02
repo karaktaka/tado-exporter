@@ -1,0 +1,15 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+prometheus-client = "0.21.1"
+libtado = ">=3,<4"
+
+[dev-packages]
+flake8 = "*"
+black = {extras = ["d"], version = "*"}
+
+[requires]
+python_version = "3.12"
