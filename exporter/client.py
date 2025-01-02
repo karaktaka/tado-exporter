@@ -91,9 +91,9 @@ if __name__ == "__main__":
                     ACTIVITY_AC_POWER.labels(zone["name"], zone["type"]).set(
                         activity_data["acPower"]["value"]
                     )
-                if "openWindow" in tado.get_state(zone["id"]) and tado.get_state(zone["id"])["openWindow"] is not None:
+                if "openWindow" in tado.get_state(zone["id"]):
                     SENSOR_WINDOW_OPENED.labels(zone["name"], zone["type"]).set(
-                        tado.get_state(zone["id"])["openWindow"]
+                        tado.get_state(zone["id"])["openWindow"] if tado.get_state(zone["id"])["openWindow"] is not None else 0
                     )
         except Exception:
             print("Cannot read data from Tado API. Will retry later.")
