@@ -27,39 +27,27 @@ if __name__ == "__main__":
         exit(1)
 
     ACTIVITY_HEATING_POWER = Gauge(
-        "tado_activity_heating_power_percentage",
-        "The % of heating power in a specific zone.",
-        ["zone", "type"]
+        "tado_activity_heating_power_percentage", "The % of heating power in a specific zone.", ["zone", "type"]
     )
     ACTIVITY_AC_POWER = Gauge(
-        "tado_activity_ac_power_value",
-        "The value of ac power in a specific zone.",
-        ["zone", "type"]
+        "tado_activity_ac_power_value", "The value of ac power in a specific zone.", ["zone", "type"]
     )
     SETTING_TEMPERATURE = Gauge(
         "tado_setting_temperature_value",
         "The temperature of a specific zone in celsius degres.",
-        ["zone", "type", "unit"]
+        ["zone", "type", "unit"],
     )
     SENSOR_TEMPERATURE = Gauge(
         "tado_sensor_temperature_value",
         "The temperature of a specific zone in celsius degres",
-        ["zone", "type", "unit"]
+        ["zone", "type", "unit"],
     )
     SENSOR_HUMIDITY_PERCENTAGE = Gauge(
-        "tado_sensor_humidity_percentage",
-        "The % of humidity in a specific zone.",
-        ["zone", "type"]
+        "tado_sensor_humidity_percentage", "The % of humidity in a specific zone.", ["zone", "type"]
     )
-    WEATHER_OUTSIDE_TEMPERATURE = Gauge(
-        "weather_outside_temperature",
-        "Temperature outside the house.",
-        ["unit"]
-    )
+    WEATHER_OUTSIDE_TEMPERATURE = Gauge("weather_outside_temperature", "Temperature outside the house.", ["unit"])
     SENSOR_WINDOW_OPENED = Gauge(
-        "tado_sensor_window_opened",
-        "1 if the sensor detected a window is open, 0 otherwise.",
-        ["zone", "type"]
+        "tado_sensor_window_opened", "1 if the sensor detected a window is open, 0 otherwise.", ["zone", "type"]
     )
 
     print("Exporter ready")
@@ -88,12 +76,12 @@ if __name__ == "__main__":
                         activity_data["heatingPower"]["percentage"]
                     )
                 if "acPower" in activity_data:
-                    ACTIVITY_AC_POWER.labels(zone["name"], zone["type"]).set(
-                        activity_data["acPower"]["value"]
-                    )
+                    ACTIVITY_AC_POWER.labels(zone["name"], zone["type"]).set(activity_data["acPower"]["value"])
                 if "openWindow" in tado.get_state(zone["id"]):
                     SENSOR_WINDOW_OPENED.labels(zone["name"], zone["type"]).set(
-                        tado.get_state(zone["id"])["openWindow"] if tado.get_state(zone["id"])["openWindow"] is not None else 0
+                        tado.get_state(zone["id"])["openWindow"]
+                        if tado.get_state(zone["id"])["openWindow"] is not None
+                        else 0
                     )
         except Exception:
             print("Cannot read data from Tado API. Will retry later.")
