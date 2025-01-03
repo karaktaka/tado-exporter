@@ -1,0 +1,8 @@
+.github/*
+.run/*
+.dockerignore
+.flake8
+.gitignore
+docker-compose.yml
+docker-compose-dev.yml
+README.md
