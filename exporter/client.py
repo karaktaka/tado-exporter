@@ -1,7 +1,33 @@
+import logging
 from os import getenv
 from time import sleep
 from libtado.api import Tado
 from prometheus_client import start_http_server, Gauge
+
+
+def set_logging_level(_level, _logger=None):
+    _switcher = {
+        1: "WARNING",
+        2: "INFO",
+        3: "DEBUG",
+    }
+
+    _fmt = logging.Formatter(
+        "%(asctime)s - %(module)s:%(lineno)d - %(levelname)s:%(message)s", datefmt="%d.%m.%Y %H:%M:%S"
+    )
+
+    # Logger
+    if _logger is None:
+        _logger = logging.getLogger(__name__)
+
+    _ch = logging.StreamHandler()
+    _ch.setFormatter(_fmt)
+
+    _logger.addHandler(_ch)
+    _logger.setLevel(_level)
+    _logger.info(f"Setting loglevel to {_level}.")
+
+    return _logger
 
 
 if __name__ == "__main__":
@@ -22,9 +48,12 @@ if __name__ == "__main__":
     print(f"Connecting to tado API using account {username}")
     try:
         tado = Tado(username, password, client_secret)
-    except KeyError:
-        print("Authentication failed. Check your username, password or client secret.")
-        exit(1)
+    except KeyError as error:
+        log.error("Authentication failed. Check your username, password or client secret.")
+        log.debug(error)
+        raise
+    else:
+        log.info("Connected to Tado API")
 
     ACTIVITY_HEATING_POWER = Gauge(
         "tado_activity_heating_power_percentage", "The % of heating power in a specific zone.", ["zone", "type"]
@@ -50,14 +79,16 @@ if __name__ == "__main__":
         "tado_sensor_window_opened", "1 if the sensor detected a window is open, 0 otherwise.", ["zone", "type"]
     )
 
-    print("Exporter ready")
+    log.info("Exporter ready")
     while True:
         # noinspection PyBroadException
         try:
             for zone in tado.get_zones():
-                activity_data = tado.get_state(zone["id"])["activityDataPoints"]
-                setting_data = tado.get_state(zone["id"])["setting"]
-                sensor_data = tado.get_state(zone["id"])["sensorDataPoints"]
+                data = tado.get_state(zone["id"])
+                activity_data = data.get("activityDataPoints")
+                setting_data = data.get("setting")
+                sensor_data = data.get("sensorDataPoints")
+                open_window = data.get("openWindow")
 
                 if "temperature" in setting_data and setting_data["temperature"] is not None:
                     SETTING_TEMPERATURE.labels(zone["name"], zone["type"], temperature_unit).set(
@@ -77,13 +108,13 @@ if __name__ == "__main__":
                     )
                 if "acPower" in activity_data:
                     ACTIVITY_AC_POWER.labels(zone["name"], zone["type"]).set(activity_data["acPower"]["value"])
-                if "openWindow" in tado.get_state(zone["id"]):
-                    SENSOR_WINDOW_OPENED.labels(zone["name"], zone["type"]).set(
-                        tado.get_state(zone["id"])["openWindow"]
-                        if tado.get_state(zone["id"])["openWindow"] is not None
-                        else 0
-                    )
-        except Exception:
-            print("Cannot read data from Tado API. Will retry later.")
+                SENSOR_WINDOW_OPENED.labels(zone["name"], zone["type"]).set(
+                    1
+                    if tado.get_state(zone["id"])["openWindow"] is not None
+                    else 0
+                )
+        except Exception as error:
+            log.error("Cannot read data from Tado API. Will retry later.")
+            log.debug(error)
         finally:
             sleep(refresh_rate)
