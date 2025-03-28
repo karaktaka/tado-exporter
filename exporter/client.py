@@ -1,8 +1,10 @@
 import logging
 from os import getenv
 from time import sleep
+
 from libtado.api import Tado
 from prometheus_client import start_http_server, Gauge
+from requests.exceptions import HTTPError
 
 
 def set_logging_level(_level, _logger=None):
@@ -48,7 +50,7 @@ if __name__ == "__main__":
     print(f"Connecting to tado API using account {username}")
     try:
         tado = Tado(username, password, client_secret)
-    except KeyError as error:
+    except (KeyError, HTTPError) as error:
         log.error("Authentication failed. Check your username, password or client secret.")
         log.debug(error)
         raise
