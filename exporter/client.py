@@ -34,9 +34,6 @@ def set_logging_level(_level, _logger=None):
 
 if __name__ == "__main__":
     # Start up the server to expose the metrics.
-    username = getenv("TADO_USERNAME")
-    password = getenv("TADO_PASSWORD")
-    client_secret = getenv("TADO_CLIENT_SECRET")
     temperature_unit = getenv("TADO_TEMPERATURE_UNIT", "celsius")
     refresh_rate = int(getenv("TADO_EXPORTER_REFRESH_RATE", 30))
     loglevel = getenv("LOGLEVEL", "INFO")
@@ -47,11 +44,18 @@ if __name__ == "__main__":
     print("Starting tado exporter")
     start_http_server(8000)
 
-    print(f"Connecting to tado API using account {username}")
+    print(f"Connecting to tado API...")
     try:
-        tado = Tado(username, password, client_secret)
+        tado = Tado(token_file_path="refresh_token.json")
+
+        status = tado.get_device_activation_status()
+
+        if status == "PENDING":
+            url = tado.get_device_verification_url()
+            tado.device_activation()
+            status = tado.get_device_activation_status()
     except (KeyError, HTTPError) as error:
-        log.error("Authentication failed. Check your username, password or client secret.")
+        log.error("Authentication failed.")
         log.debug(error)
         raise
     else:
