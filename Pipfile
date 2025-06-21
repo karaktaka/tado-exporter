@@ -12,4 +12,4 @@ flake8 = "*"
 black = {extras = ["d"], version = "*"}
 
 [requires]
-python_version = ">=3.12,<3.13"
+python_version = "3.12"
