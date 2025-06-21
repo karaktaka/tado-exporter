@@ -8,12 +8,6 @@ from requests.exceptions import HTTPError
 
 
 def set_logging_level(_level, _logger=None):
-    _switcher = {
-        1: "WARNING",
-        2: "INFO",
-        3: "DEBUG",
-    }
-
     _fmt = logging.Formatter(
         "%(asctime)s - %(module)s:%(lineno)d - %(levelname)s:%(message)s", datefmt="%d.%m.%Y %H:%M:%S"
     )
@@ -44,7 +38,7 @@ if __name__ == "__main__":
     print("Starting tado exporter")
     start_http_server(8000)
 
-    print(f"Connecting to tado API...")
+    print("Connecting to tado API...")
     try:
         tado = Tado(token_file_path="refresh_token.json")
 
@@ -115,9 +109,7 @@ if __name__ == "__main__":
                 if "acPower" in activity_data:
                     ACTIVITY_AC_POWER.labels(zone["name"], zone["type"]).set(activity_data["acPower"]["value"])
                 SENSOR_WINDOW_OPENED.labels(zone["name"], zone["type"]).set(
-                    1
-                    if tado.get_state(zone["id"])["openWindow"] is not None
-                    else 0
+                    1 if tado.get_state(zone["id"])["openWindow"] is not None else 0
                 )
         except Exception as error:
             log.error("Cannot read data from Tado API. Will retry later.")

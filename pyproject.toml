@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "A basic crawler for the tado api"
 authors = [{ name = "Dennis Bernardy", email = "bernardyd@gmail.com" }]
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.12,<3.13"
 packages = [{include = "exporter"}]
 
 [build-system]
