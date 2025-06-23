@@ -1,3 +1,11 @@
+# /// script
+# requires-python = ">=3.12,<3.13"
+# dependencies = [
+# "prometheus-client>=0.21.1",
+#   "libtado>=4,<5",
+# ]
+# ///
+
 import logging
 from os import getenv
 from time import sleep
