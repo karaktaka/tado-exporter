@@ -36,8 +36,6 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          build-contexts: |
-            uv=docker-image://ghcr.io/astral-sh/uv:0.7.13
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
           cache-from: type=gha

@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-
+FROM ghcr.io/astral-sh/uv:latest AS uv
 FROM alpine
 
 # Setup env
