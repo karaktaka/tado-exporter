@@ -18,6 +18,7 @@ USER appuser
 WORKDIR /app
 
 COPY --chown=${UID} exporter/ /app/
-RUN uv sync --script client.py
+RUN --mount=type=cache,uid=${UID},target=/app/.cache \
+    uv sync --script client.py
 
 CMD [ "uv", "run", "--script", "client.py" ]
