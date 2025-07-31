@@ -1,10 +1,9 @@
-# /// script
-# requires-python = ">=3.12,<3.13"
-# dependencies = [
-# "prometheus-client>=0.21.1",
-#   "libtado>=4,<5",
-# ]
-# ///
+# -*- coding: utf-8 -*-
+"""
+Tado Exporter Client
+This script connects to the Tado API and exports various metrics related to temperature, humidity, and
+heating/AC activity to Prometheus.
+"""
 
 import logging
 from os import getenv
