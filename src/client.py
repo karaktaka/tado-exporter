@@ -75,10 +75,10 @@ if __name__ == "__main__":
     # set logging level
     log = set_logging_level(loglevel)
 
-    print("Starting tado exporter")
+    log.info("Starting tado exporter")
     start_http_server(8000)
 
-    print("Connecting to tado API...")
+    log.info("Connecting to tado API...")
     try:
         tado = Tado(token_file_path="refresh_token.json")
 
