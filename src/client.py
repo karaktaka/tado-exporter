@@ -10,13 +10,46 @@ from os import getenv
 from time import sleep
 
 from libtado.api import Tado
-from prometheus_client import start_http_server, Gauge
+from prometheus_client import Gauge, start_http_server
 from requests.exceptions import HTTPError
+
+ACTIVITY_HEATING_POWER = Gauge(
+    "tado_activity_heating_power_percentage",
+    "The % of heating power in a specific zone.",
+    ["zone", "type"],
+)
+ACTIVITY_AC_POWER = Gauge(
+    "tado_activity_ac_power_value",
+    "The value of ac power in a specific zone.",
+    ["zone", "type"],
+)
+SETTING_TEMPERATURE = Gauge(
+    "tado_setting_temperature_value",
+    "The temperature of a specific zone in celsius degres.",
+    ["zone", "type", "unit"],
+)
+SENSOR_TEMPERATURE = Gauge(
+    "tado_sensor_temperature_value",
+    "The temperature of a specific zone in celsius degres",
+    ["zone", "type", "unit"],
+)
+SENSOR_HUMIDITY_PERCENTAGE = Gauge(
+    "tado_sensor_humidity_percentage",
+    "The % of humidity in a specific zone.",
+    ["zone", "type"],
+)
+WEATHER_OUTSIDE_TEMPERATURE = Gauge("weather_outside_temperature", "Temperature outside the house.", ["unit"])
+SENSOR_WINDOW_OPENED = Gauge(
+    "tado_sensor_window_opened",
+    "1 if the sensor detected a window is open, 0 otherwise.",
+    ["zone", "type"],
+)
 
 
 def set_logging_level(_level, _logger=None):
     _fmt = logging.Formatter(
-        "%(asctime)s - %(module)s:%(lineno)d - %(levelname)s:%(message)s", datefmt="%d.%m.%Y %H:%M:%S"
+        "%(asctime)s - %(module)s:%(lineno)d - %(levelname)s:%(message)s",
+        datefmt="%d.%m.%Y %H:%M:%S",
     )
 
     # Logger
@@ -61,30 +94,6 @@ if __name__ == "__main__":
         raise
     else:
         log.info("Connected to Tado API")
-
-    ACTIVITY_HEATING_POWER = Gauge(
-        "tado_activity_heating_power_percentage", "The % of heating power in a specific zone.", ["zone", "type"]
-    )
-    ACTIVITY_AC_POWER = Gauge(
-        "tado_activity_ac_power_value", "The value of ac power in a specific zone.", ["zone", "type"]
-    )
-    SETTING_TEMPERATURE = Gauge(
-        "tado_setting_temperature_value",
-        "The temperature of a specific zone in celsius degres.",
-        ["zone", "type", "unit"],
-    )
-    SENSOR_TEMPERATURE = Gauge(
-        "tado_sensor_temperature_value",
-        "The temperature of a specific zone in celsius degres",
-        ["zone", "type", "unit"],
-    )
-    SENSOR_HUMIDITY_PERCENTAGE = Gauge(
-        "tado_sensor_humidity_percentage", "The % of humidity in a specific zone.", ["zone", "type"]
-    )
-    WEATHER_OUTSIDE_TEMPERATURE = Gauge("weather_outside_temperature", "Temperature outside the house.", ["unit"])
-    SENSOR_WINDOW_OPENED = Gauge(
-        "tado_sensor_window_opened", "1 if the sensor detected a window is open, 0 otherwise.", ["zone", "type"]
-    )
 
     log.info("Exporter ready")
     while True:

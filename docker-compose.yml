@@ -1,7 +1,0 @@
-services:
-  tado-exporter:
-    image: ghcr.io/karaktaka/tado-exporter
-    restart: unless-stopped
-    environment:
-      - TADO_USERNAME=
-      - TADO_PASSWORD=

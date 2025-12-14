@@ -1,8 +1,8 @@
 .github/*
 .run/*
 .dockerignore
-.flake8
 .gitignore
+**/refresh_token.json
 docker-compose.yml
 docker-compose-dev.yml
 README.md

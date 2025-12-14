@@ -3,8 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: local/tado-exporter
-    restart: unless-stopped
+    image: localhost/tado-exporter
+    restart: no
     environment:
-      - TADO_USERNAME=
-      - TADO_PASSWORD=
+      - TADO_EXPORTER_REFRESH_RATE=
