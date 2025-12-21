@@ -71,7 +71,7 @@ def retry(_header, _max_retries: int):
     _retry_after = None
     if _max_retries <= 0:
         log.error("Maximum retries reached. Exiting.")
-        return False
+        return False, _max_retries
     _rate_limit_header = _header.get("RateLimit", "")
     for _part in _rate_limit_header.split(";"):
         if _part.strip().startswith("t="):
@@ -112,10 +112,10 @@ if __name__ == "__main__":
                 if retry:
                     continue
                 exit(1)
-            elif (
-                isinstance(error, KeyError)
-                or [requests.codes.unauthorized, requests.codes.forbidden] in error.response.status_code
-            ):
+            elif isinstance(error, KeyError) or error.response.status_code in [
+                requests.codes.unauthorized,
+                requests.codes.forbidden,
+            ]:
                 log.error("Authentication failed. Please check your credentials.")
             exit(2)
 
