@@ -23,7 +23,7 @@ var TD = {
 };
 ```
 
-An alternative way to get your `CLIENT_SECRET` is to enable the Developper Mode when logging in and catch the Headers.
+An alternative way to get your `CLIENT_SECRET` is to enable the Developer Mode when logging in and catch the Headers.
 You will find the form data like this :
 
 ```yaml
@@ -36,7 +36,7 @@ username: email@example.com
 ```
 
 Then you just have to get the value in the attribute `client_secret`. You will need it to connect to your account
-through Tado APIs. The `client_secret` never dies so you can base your script on it.
+through Tadoº APIs. The `client_secret` never dies so you can base your script on it.
 
 ## How to run it
 
